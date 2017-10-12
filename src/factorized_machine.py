@@ -3,9 +3,23 @@ import csv
 import ast
 from scipy import sparse
 from lightfm import LightFM
-from lightfm.datasets import fetch_movielens
-from lightfm.evaluation import precision_at_k
+from lightfm.evaluation import auc_score
 
+
+anime_id_name = {}
+new_id_dict = {}
+
+with open('new_anime_id.csv', 'r', encoding='utf-8') as f:
+    reader = csv.reader(f)
+    for line in reader:
+        new_id_dict[line[0]] = line[1]
+
+with open('general.csv', 'r', encoding='utf-8') as f:
+    reader = csv.reader(f)
+    for line in reader:
+    	if line[0] == 'anime_id':
+    		continue
+    	anime_id_name[new_id_dict[line[0]]] = line[1]
 
 item_features = np.zeros((13510, 44))
 
@@ -27,10 +41,25 @@ with open('out_file.csv', 'r') as f:
 
 data2 = np.array(data)
 
-data = sparse.csr_matrix(data2[500:])
+
+NUM_THREADS = 4
+NUM_EPOCHS = 30
+
+
+train = data2[:int(len(data2) * 0.8)]
+test = data2[int(len(data2) * 0.8):]
+train = sparse.csr_matrix(train)
+test = sparse.csr_matrix(test)
 item_features = sparse.csr_matrix(item_features)
 
-model = LightFM(loss='warp')
-model.fit(interactions=data, epochs=30, num_threads=2, item_features=item_features)
-print("Prediccion")
-print(model.predict(0, data2[0]).argsort()[-5:][::-1])
+model = LightFM(loss='warp', learning_rate=0.05)
+
+model.fit(interactions=train, item_features=item_features, epochs=NUM_EPOCHS, num_threads=NUM_THREADS)
+
+
+predictions = model.predict(0, data2[0]).argsort()[-5:][::-1]
+print("Recomendaciones:")
+for p in predictions:
+	print(anime_id_name[str(p+1)])
+
+
