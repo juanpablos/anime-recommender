@@ -6,7 +6,7 @@ Repository for the course CC5206 - Introduction to Data Mining at University of 
 Requirements:
 
 * LightFM
-* Sklean
+* Sklearn
 * Scipy
 * Pandas
 * Numpy
