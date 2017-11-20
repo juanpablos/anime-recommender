@@ -1,6 +1,7 @@
 import random
 
 import numpy as np
+from scipy import sparse
 
 
 class KIMeans:
@@ -12,8 +13,7 @@ class KIMeans:
         self.max_iter = max_iter
         self.delta = delta
 
-    @staticmethod
-    def get_distance(center, point):
+    def get_distance(self, center, point):
         d = 0
         # Only calculate distances for no null dimensions
         for d1, d2 in zip(center, point):
@@ -31,7 +31,6 @@ class KIMeans:
         iterations = 0
         while changed and iterations < self.max_iter:
             iterations += 1
-            print(iterations)
             changed = self.centroids_changed(old_centroids)
             for index_instance, instance in enumerate(data):
                 dist_vec = np.zeros((self.k, 1))
@@ -63,8 +62,7 @@ class KIMeans:
         return [self.centroids, self.belongs_to]
 
     # Mean of current cluster only considering shared dimensions
-    @staticmethod
-    def mean(data, dimensions):
+    def mean(self, data, dimensions):
         if len(data) != 0:
             index_to_consider = [i + 1 for i in range(dimensions)]
             for data_point in data:
@@ -91,16 +89,17 @@ class KIMeans:
 
 
 if __name__ == '__main__':
-    a = np.array([[7, 7, 0, 3],
-                  [7, 10, 1, 5],
-                  [1, 7, 10, 1],
-                  [7, 9, 0, 8],
-                  [1, 3, 2, 4],
-                  [1, 5, 10, 3],
-                  [6, 9, 4, 9],
-                  [2, 3, 2, 4],
+    a = np.array([[0, 0, 0, 0],
+                  [0, 10, 0, 5],
+                  [1, 0, 10, 0],
+                  [7, 0, 0, 8],
+                  [1, 3, 2, 0],
+                  [1, 0, 10, 3],
+                  [6, 9, 0, 9],
+                  [0, 3, 2, 4],
                   ])
     ki = KIMeans(4, 100, 1e-4)
-    ki.fit(a)
+    aa = sparse.coo_matrix(a)
+    ki.fit(np.array(aa.todense()))
     print(ki.get_correlations()[0])
     print(ki.get_correlations()[1])
