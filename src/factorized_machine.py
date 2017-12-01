@@ -6,7 +6,6 @@ from scipy import sparse
 from lightfm import LightFM
 from lightfm.evaluation import auc_score
 
-
 anime_id_name = {}
 new_id_dict = {}
 users_id = {}
@@ -44,20 +43,18 @@ with open('anime_dict.csv', 'r') as fm:
         a_id = int(line[0])
         a_genres = ast.literal_eval(line[1])
         for g in a_genres:
-            item_features[(a_id-1, g-1)] = 1
-
-
+            item_features[(a_id - 1, g - 1)] = 1
 
 train = np.copy(data2)
 test = np.copy(data2)
 
 for i in range(int(len(data2) * 0.8)):
     for j in range(len(test[i])):
-        test[(i,j)] = 0.
+        test[(i, j)] = 0.
 
 for i in range(int(len(data2) * 0.8), int(len(data2))):
     for j in range(len(train[i])):
-        train[(i,j)] = 0.
+        train[(i, j)] = 0.
 
 NUM_THREADS = 4
 NUM_EPOCHS = 30
@@ -78,8 +75,7 @@ predictions = model.predict(0, data2[prediction_id]).argsort()[-20:][::-1]
 
 print("Predictions for user {}".format(users_id[prediction_id]))
 for p in predictions:
-    print(anime_id_name[p+1])
-
+    print(anime_id_name[p + 1])
 
 train_auc = auc_score(model, train, item_features=item_features, num_threads=NUM_THREADS).mean()
 print('Collaborative filtering train AUC: %s' % train_auc)
@@ -92,8 +88,3 @@ model.item_biases *= 0.0
 
 test_auc = auc_score(model, test, train_interactions=train, item_features=item_features, num_threads=NUM_THREADS).mean()
 print('Collaborative filtering test AUC: %s' % test_auc)
-
-
-
-
-
