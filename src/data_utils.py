@@ -190,7 +190,7 @@ def run_kimeans(data, k, iter, user_ids_file, out_file, debug=False):
 
 if __name__ == "__main__":
     dicta = fetch_anime(train_file='user_interactions_train.csv', test_file='user_interactions_test.csv',
-                       user_features_file='kmeans_score0_out.csv', features_file='anime_director_ind.csv', min_score=0)
+                        user_features_file='kmeans_score0_out.csv', features_file='anime_director_ind.csv', min_score=0)
     print(dicta)
     # anime_data = fetch_all_data('user_interactions.csv', 0)
     # run_lsa_kmeans(anime_data, 50, user_ids_file='Data/users_id.csv', out_file='kmeans_lsa_dim100_out.csv', debug=True, reduce_dim_to=100)

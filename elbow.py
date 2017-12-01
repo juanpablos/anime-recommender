@@ -1,7 +1,7 @@
 import csv
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 from scipy import sparse
 from sklearn.decomposition import TruncatedSVD
 
@@ -43,7 +43,7 @@ with open('out_file.csv', 'r') as f:
         if line:
             data.append([int(i) for i in line[1:]])
 
-#data2 = np.array(data)
+# data2 = np.array(data)
 
 data2 = sparse.coo_matrix(np.array(data))
 svd = TruncatedSVD(n_components=200, n_iter=7, random_state=0)
@@ -52,5 +52,3 @@ reduced_data = svd.fit_transform(data2)
 error = get_sse(reduced_data, 101, step=20)
 plt.plot([i for i in range(1, 101, 20)], error, 'o-')
 plt.show()
-
-
